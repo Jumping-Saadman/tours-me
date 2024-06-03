@@ -1,8 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./booking.css";
 import { Form, FormGroup, ListGroup, ListGroupItem, Button } from "reactstrap";
 import { useToast } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { BASE_URL } from "../../utils/config";
 
@@ -11,9 +11,19 @@ const Booking = ({ tour, avgRating }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const { user } = useContext(AuthContext);
+  const { id } = useParams();
+  const today = new Date()
+  const formattedDate = today.toISOString().split('T')[0]
+
+  function containsSpecialChars(str) {
+    const specialChars =
+      /[`0123456789!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    return specialChars.test(str);
+  }
 
   const [booking, setBooking] = useState({
     userId: user && user._id,
+    tourId: id,
     userEmail: user && user.email,
     tourName: title,
     fullName: "",
@@ -23,7 +33,25 @@ const Booking = ({ tour, avgRating }) => {
   });
 
   const handleChange = (e) => {
-    setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    switch (e.target.id) {
+      case 'fullName':
+        if (containsSpecialChars(e.target.value))
+          alert("Full name must not contain any special characters or digits!")
+        else
+          setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }))
+        break
+      case 'phone':
+        if (e.target.value.length > 11)
+          alert("Phone number must be of 11 digits!")
+        else
+          setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }))
+        break
+      case 'bookAt':
+        setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }))
+        break
+      case 'guestSize':
+        setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }))
+    }
   };
 
   const serviceFee = 10;
@@ -35,6 +63,18 @@ const Booking = ({ tour, avgRating }) => {
       if (!user || user === undefined || user === null) {
         return alert("please sign in");
       }
+      console.log(booking.fullName)
+      if (booking.fullName === "" || booking.bookAt === "" || booking.phone === "" || booking.guestSize === "")
+        return alert("All fields are required!")
+      if (containsSpecialChars(booking.fullName))
+        return alert("Full name must not contain any special characters or digits!")
+      if (booking.phone.length != 11)
+        return alert("Phone number must be of 11 digits!")
+      if (booking.guestSize <= 0)
+        return alert("Guest Size must be a positive number!")
+      if (booking.guestSize > 20)
+        return alert("Sorry, maximum number of guests allowed is 20 :(")
+
       toast({
         title: "We Recieved Your Request!",
         description: "Please wait for the confirmation.",
@@ -53,6 +93,7 @@ const Booking = ({ tour, avgRating }) => {
       })
         .then((res) => res.json())
         .then((data) => {
+          // console.log(data);
           navigate(`/payment/${data.data._id}`);
         });
     } catch (err) {
@@ -99,6 +140,7 @@ const Booking = ({ tour, avgRating }) => {
               type="date"
               placeholder=""
               id="bookAt"
+              min={formattedDate}
               required
               onChange={handleChange}
             />

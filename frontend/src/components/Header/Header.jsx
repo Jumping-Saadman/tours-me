@@ -17,10 +17,6 @@ const nav__links = [
     display: "About",
   },
   {
-    path: "/chats",
-    display: "Chat",
-  },
-  {
     path: "/tours",
     display: "Tours",
   },
@@ -108,18 +104,18 @@ const Header = () => {
                           style={
                             user?.role === "admin"
                               ? {
-                                  width: "2.5rem",
-                                  height: "2.5rem",
-                                  borderRadius: "50%",
-                                  objectFit: "cover",
-                                }
+                                width: "2.5rem",
+                                height: "2.5rem",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }
                               : {
-                                  backgroundColor: "green",
-                                  width: "2.5rem",
-                                  height: "2.5rem",
-                                  borderRadius: "50%",
-                                  objectFit: "cover",
-                                }
+                                backgroundColor: "green",
+                                width: "2.5rem",
+                                height: "2.5rem",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }
                           }
                         />
                       </Link>
