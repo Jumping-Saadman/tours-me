@@ -16,7 +16,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 4000;
 const corsOptions = {
-  origin: ["https://tours-me-saadman-omar-siddiques-projects.vercel.app/"],
+  origin: ["https://tours-76lcoal1b-saadman-omar-siddiques-projects.vercel.app/"],
   credentials: true,
 };
 
